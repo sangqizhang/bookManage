@@ -38,3 +38,22 @@ export const userInfoUpdateService = (userData) => {
     }
     return request.put('/user',params);
 }
+
+export const userFind = () => {
+    return request.get('/user');
+}
+
+export const adduserD = (userData) => {
+    console.log(userData);
+    return request.post('/user', userData, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+}
+
+
+export const deleteuserD = (userId)=>{
+    console.log(userId);
+    return request.delete(`/user/${userId}`);
+}

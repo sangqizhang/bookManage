@@ -35,7 +35,7 @@ const getUserType = (type) => {
     } else if (type === 2) {
     return '普通用户';
     } else if (type === 3) {
-    return '未知';
+    return '游客';
     } else {
     return '未知';
     }
