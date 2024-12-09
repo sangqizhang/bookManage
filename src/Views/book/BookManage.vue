@@ -42,7 +42,7 @@ const addBook = async()=>{
     let result = await addBookD(book.value);
     ElMessage.success(result.msg?result.msg:'添加成功')
 
-    bookF();
+    BookF();
     dialogVisible.value = false;
 }
 import { ElMessageBox } from 'element-plus';
@@ -65,7 +65,7 @@ const deleteBook = (row)=>{
         message: '删除成功',
       })
       //调用获取邮箱信息函数刷新页面
-      bookF();
+      BookF();
       dialogVisible.value = false;
     })
     .catch(() => {
