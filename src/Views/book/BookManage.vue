@@ -3,8 +3,8 @@ import request from '@/Utils/request.js'
 import {
     Edit,
     Delete
-} from '@element-plus/icons-vue'
-import { ref, onMounted } from 'vue'
+} from '@element-plus/icons-vue';
+import { ref, onMounted } from 'vue';
 import { useTokenStore } from '@/stores/token';
 import { ElMessage } from 'element-plus';
 const bookData = ref({
@@ -25,12 +25,26 @@ const book = ref([
     }
 ])
 
-const dialogVisible = ref(false)
+const newBook = ref(
+    {
+        "title": '',
+        "author": '',
+        "id": '',
+        "title": '',
+        "publishtime": '',
+        "count": '',
+        "total": '',
+        "available": '',
+    }
+)
+
+const dialogVisible = ref(false);
+
 import { bookFind, addBookD, deleteBookD } from '@/API/book';
 const BookF = async ()=>{
     let result = await bookFind();
     console.log(result);
-    book.value = result.data;
+    book.value = result.data.rows;
 
 }
 onMounted(() => {
@@ -39,7 +53,7 @@ onMounted(() => {
 
 const addBook = async()=>{
     //调用接口
-    let result = await addBookD(book.value);
+    let result = await addBookD(newBook.value);
     ElMessage.success(result.msg?result.msg:'添加成功')
 
     BookF();
@@ -59,7 +73,7 @@ const deleteBook = (row)=>{
     )
     .then(async() => {
         //点击确认后调用接口删除
-        let result = await deleteBookD({ id: row.id })
+        let result = await deleteBookD(row.id);
       ElMessage({
         type: 'success',
         message: '删除成功',
@@ -75,6 +89,9 @@ const deleteBook = (row)=>{
       })
     })
 }
+const openDialog = () => {
+      dialogVisible.value = true;
+    };
 </script>
 
 <template>
@@ -84,7 +101,7 @@ const deleteBook = (row)=>{
             <div class="header">
                 <span>图书管理</span>
                 <div class="extra">
-                    <el-button type="primary" @click="dialogVisible = true">添加图书</el-button>
+                    <el-button type="primary" @click="openDialog">添加图书</el-button>
                 </div>
             </div>
              
@@ -100,7 +117,7 @@ const deleteBook = (row)=>{
             <el-table-column label="索书号" prop="index"></el-table-column>
             <el-table-column label="操作" width="100">
                 <template #default="{ row }">
-                    <el-button :icon="Edit" circle plain type="primary" ></el-button>
+                    <el-button :icon="Edit" circle plain type="primary" ></el-button>   
                     <el-button :icon="Delete" circle plain type="danger" @click="deleteBook(row)"></el-button>
                 </template>
             </el-table-column>
@@ -109,12 +126,21 @@ const deleteBook = (row)=>{
             </template>
         </el-table>
         <el-dialog v-model="dialogVisible" title="添加图书" width="100%">
-            <el-form :model="book"  label-width="100px" style="padding-right: 30px">
-                <el-form-item label="title" prop="title">
-                    <el-input v-model="book.title" minlength="1" maxlength="30"></el-input>
+            <el-form :model="newBook"  label-width="100px" style="padding-right: 30px">
+                <el-form-item label="图书名称" prop="title">
+                    <el-input v-model="newBook.title" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="author" prop="title">
-                    <el-input v-model="book.author" minlength="1" maxlength="30"></el-input>
+                <el-form-item label="作者" prop="author">
+                    <el-input v-model="newBook.author" minlength="1" maxlength="30"></el-input>
+                </el-form-item>
+                <el-form-item label="总数量" prop="total">
+                    <el-input v-model="newBook.total" minlength="1" maxlength="30"></el-input>
+                </el-form-item>
+                <el-form-item label="可借阅数量" prop="available">
+                    <el-input v-model="newBook.available" minlength="1" maxlength="30"></el-input>
+                </el-form-item>
+                <el-form-item label="索书号" prop="index">
+                    <el-input v-model="newBook.index" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>

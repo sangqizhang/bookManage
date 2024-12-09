@@ -10,20 +10,17 @@ export const bookFind = () => {
     return request.get('/book');
 }
 
-export const addBookD = (bookData)=>{
-    const params = new URLSearchParams();
-    for(let key in bookData){
-        params.append(key,bookData[key]);
-    }
-    return request.post('/add',params);
-}
-
-
-export const deleteBookD = (bookId)=>{
-    return request.delete('/book/delete', {
-        data:bookId, 
+export const addBookD = (bookData) => {
+    console.log(bookData);
+    return request.post('/book/add', bookData, {
         headers: {
             'Content-Type': 'application/json',
         },
     });
+}
+
+
+export const deleteBookD = (bookId)=>{
+    console.log(bookId);
+    return request.delete(`/book/delete/${bookId}`);
 }
