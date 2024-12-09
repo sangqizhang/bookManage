@@ -24,3 +24,8 @@ export const deleteBookD = (bookId)=>{
     console.log(bookId);
     return request.delete(`/book/delete/${bookId}`);
 }
+
+export const getBookD = (bookId)=>{
+    console.log(bookId);
+    return request.post(`/book/${bookId}`);
+}
