@@ -8,8 +8,62 @@ import {
     EditPen,
     SwitchButton,
     CaretBottom
-} from '@element-plus/icons-vue'
-import avatar from '@/assets/default.png'
+} from '@element-plus/icons-vue';
+import avatar from '@/assets/default.png';
+
+import { useRouter } from 'vue-router';
+
+import { ref,onMounted } from 'vue';
+
+const router = useRouter();
+
+const Info = ref([
+    {
+        
+        "username": '',
+        "type": '',
+        "regtime": '',
+        "name":'',
+        "phone":'',
+        "email":''
+    }
+]);
+
+const userId=sessionStorage.getItem('userId');
+//声明一个异步函数
+import { userFindService } from '@/API/user';
+const userInfo = async()=>{
+    let result = await userFindService(userId);
+    
+    Info.value = result.data;
+}
+
+onMounted(() => {
+    userInfo();
+    });
+
+const logout = ()=>{
+    //清除用户信息
+    sessionStorage.removeItem('userId');
+    //跳转到登录页面
+    router.push('/login');
+}
+const profile = ()=>{
+    router.push('/user/info');
+}
+const password = ()=>{
+    router.push('/user/passwd');
+}
+const handleCommand = (command) => {
+    if (command === 'logout') {
+        logout();
+    } else if (command === 'profile') {
+        profile();
+    } else if (command === 'password') {
+        password();
+        // 处理重置密码
+    }
+};
 </script>
 
 <template>
@@ -54,22 +108,23 @@ import avatar from '@/assets/default.png'
                         </el-icon>
                         <span>基本资料</span>
                     </el-menu-item>
-                    <el-menu-item index="/user/email">
+                    <el-menu-item index="/user/passwd">
                         <el-icon>
                             <User />
                         </el-icon>
-                        <span>邮箱</span>
+                        <span>修改密码</span>
                     </el-menu-item>
+                    
                 </el-sub-menu>
             </el-menu>
         </el-aside>
         <!-- 右侧主区域 -->
         <el-container>
-            <!-- 头部区域 -->
+            <!-- 头部区域 -->   
             <el-header>
-                <div>当前用户：<strong>FFT</strong></div>
+                <div>当前用户：<strong>{{Info.username}}</strong></div>
                 <!-- 下拉菜单 -->
-                <el-dropdown placement="bottom-end">
+                <el-dropdown @command="handleCommand" placement="bottom-end">
                     <span class="el-dropdown__box">
                         <el-avatar :src="avatar" />
                         <el-icon>
@@ -90,10 +145,10 @@ import avatar from '@/assets/default.png'
                 <router-view></router-view>
             </el-main>
             <!-- 底部区域 -->
-            <!-- <el-footer>大事件 ©2023 Created by 黑马程序员</el-footer> -->
         </el-container>
     </el-container>
 </template>
+
 
 <style lang="scss" scoped>
 .layout-container {

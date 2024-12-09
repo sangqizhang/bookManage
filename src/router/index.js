@@ -10,8 +10,6 @@ import UserManageVue from '@/Views/user/UserManage.vue'
 
 import UserAvatarVue from '@/Views/user/UserAvatar.vue'
 import UserInfoVue from '@/Views/user/UserInfo.vue'
-import UserEmailVue from '@/Views/user/Email.vue'
-import UserBankAccountVue from '@/Views/user/BankAccount.vue'
 import UserResetPasswordVue from '@/Views/user/UserResetPassword.vue'
 
 //定义路由关系
@@ -27,10 +25,8 @@ const routes = [
             {path:'/book',component:BookManageVue},
             {path:'/userManage',component:UserManageVue},
             {path:'/user/info',component:UserInfoVue},
-            {path:'/user/email',component:UserEmailVue},
-            {path:'/user/bankAccount',component:UserBankAccountVue},
             {path:'/article/avatar',component:UserAvatarVue},
-            {path:'/article/resetpassword',component:UserResetPasswordVue}
+            {path:'/user/passwd',component:UserResetPasswordVue}
         ]
     }
 ]

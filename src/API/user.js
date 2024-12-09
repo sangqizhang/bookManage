@@ -18,3 +18,23 @@ export const userLoginService = (loginData) => {
     }
     return request.post('/login',params);
 }
+
+export const userFindService = (userId) => {
+    return request.get(`/user/${userId}`);
+}
+
+export const userUpdateService = (userData) => {
+    const params = new URLSearchParams();
+    for(let key in userData){
+        params.append(key,userData[key]);
+    }
+    return request.put('/user/passwd',params);
+}
+
+export const userInfoUpdateService = (userData) => {
+    const params = new URLSearchParams();
+    for(let key in userData){
+        params.append(key,userData[key]);
+    }
+    return request.put('/user',params);
+}

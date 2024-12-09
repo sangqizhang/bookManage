@@ -9,20 +9,29 @@ export const articleFind = () => {
     // }
     return request.get('/article');
 }
+
 export const addArticleD = (articleData)=>{
-    const params = new URLSearchParams()
+    const params = new URLSearchParams();
     for(let key in articleData){
         params.append(key,articleData[key]);
     }
-    return request.post('/article/upload',params)
+    return request.post('/article/upload',params);
 }
 
-//删除邮箱数据
+
 export const deleteArticleD = (articleId)=>{
     return request.delete('/article/delete', {
-        data:articleId, // 直接将 emailData 作为 JSON 数据体发送
+        data:articleId, 
         headers: {
-            'Content-Type': 'application/json', // 确保 Content-Type 为 JSON
+            'Content-Type': 'application/json',
         },
     });
+}
+
+export const editArticleD = (articleData) => {
+    const params = new URLSearchParams();
+    for(let key in articleData){
+        params.append(key,articleData[key]);
+    }
+    return request.put('/article',params);
 }
