@@ -237,3 +237,15 @@ const uploadFile = (file, fileList) => {
 
     </el-card>
 </template>
+
+<style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.extra {
+  margin-left: auto;
+}
+</style>
