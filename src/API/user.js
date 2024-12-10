@@ -62,3 +62,12 @@ export const getUserD = (userId)=>{
     console.log(userId);
     return request.get(`/user/${userId}`);
 }
+
+export const edituserD = (userData) => {
+    console.log(userData.userId)
+    const params = new URLSearchParams();
+    for(let key in userData){
+        params.append(key,userData[key]);
+    }
+    return request.put('/user/edit',params);
+}

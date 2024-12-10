@@ -15,6 +15,7 @@ const userData = ref({
 
 const user = ref([
     {
+        "id": '',
         "username": '',
         "type": '',
         "regtime": '',
@@ -35,6 +36,7 @@ const useradd = ref(
 )
 const viewUser = ref(
     {
+        "userId": '',
         "username": '',
         "password": '',
         "type": '',
@@ -45,7 +47,7 @@ const viewUser = ref(
 )
 const dialogVisible = ref(false)
 const getDialog = ref(false)
-import { userFind, adduserD, deleteuserD, getUserD } from '@/API/user';
+import { userFind, adduserD, deleteuserD, getUserD, edituserD } from '@/API/user';
 const userF = async ()=>{
     let result = await userFind();
     console.log(result)
@@ -110,6 +112,15 @@ const getUser = async(row)=>{
     getDialog.value = true;
     let result = await getUserD(row.id);
     viewUser.value = result.data;
+    viewUser.value.userId = row.id;
+}
+
+const editUser = async()=>{
+    let result = await edituserD(viewUser.value);
+    ElMessage.success(result.msg?result.msg:'修改成功')
+    getDialog.value = false;
+
+    userF();
 }
 </script>
 
@@ -128,6 +139,7 @@ const getUser = async(row)=>{
         <el-table :data="user" style="width: 100%">
             <el-table-column label="序号" width="100" type="index"> </el-table-column>
             <el-table-column label="用户名" prop="username"></el-table-column>
+            <el-table-column label="用户编号" prop="id"></el-table-column>
             <el-table-column label="注册时间" prop="regtime"></el-table-column>
             <el-table-column label="姓名" prop="name"></el-table-column>
             <el-table-column label="手机" prop="phone"></el-table-column>
@@ -179,7 +191,7 @@ const getUser = async(row)=>{
         <el-dialog v-model="getDialog" title="查看用户信息" width="100%">
       <el-form :model="viewUser" label-width="100px" style="padding-right: 30px">
         <el-form-item label="用户名" prop="username">
-            <el-input v-model="viewUser.username" minlength="1" maxlength="30"></el-input>
+            <el-input v-model="viewUser.username" minlength="1" maxlength="30" disabled></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
             <el-input v-model="viewUser.password" minlength="1" maxlength="30"></el-input>
@@ -199,7 +211,8 @@ const getUser = async(row)=>{
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="getDialog = false">关闭</el-button>
+          <el-button type="danger" @click="editUser">修改</el-button>
+          <el-button type="primary" @click="getDialog = false">关闭</el-button>
         </span>
       </template>
     </el-dialog>
