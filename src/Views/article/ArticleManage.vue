@@ -2,7 +2,9 @@
 import request from '@/Utils/request.js'
 import {
     Edit,
-    Delete
+    Delete,
+    Download,
+    UploadFilled
 } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue'
 import { useTokenStore } from '@/stores/token';
@@ -16,14 +18,28 @@ const article = ref([
     {
         "title": '',
         "author": '',
-        "id": ''
+        "id": '',
+        "url": '',
+        "publisher": '',
+        "count": ''
     }
 ])
+
+const articleA = ref({
+    "title": '',
+    "author": '',
+    "url": '',
+    "publisher": ''
+})
+
+const downloadA = ref({
+    "url": ''
+})
 
 const dialogVisible = ref(false)
 const editDialog = ref(false)
 
-import { articleFind, addArticleD, deleteArticleD, editArticleD } from '@/API/article';
+import { articleFind, addArticleD, deleteArticleD, editArticleD, downloadArticleD } from '@/API/article';
 const articleF = async ()=>{
     let result = await articleFind();
     console.log(result)
@@ -36,7 +52,7 @@ onMounted(() => {
 
 const addArticle = async()=>{
     //调用接口
-    let result = await addArticleD(article.value);
+    let result = await addArticleD(articleA.value);
     ElMessage.success(result.msg?result.msg:'添加成功')
 
     articleF();
@@ -45,7 +61,7 @@ const addArticle = async()=>{
 
 const editArticle = async()=>{
     //调用接口
-    let result = await editArticleD(article.value);
+    let result = await editArticleD(articleA.value);
     ElMessage.success(result.msg?result.msg:'修改成功')
 
     articleF();
@@ -54,12 +70,24 @@ const editArticle = async()=>{
 
 import { ElMessageBox } from 'element-plus';
 
-const handleEdit = (row)=>{
-    article.value.id = row.id;
+const handleEdit = (aid)=>{
+    articleA.value.id = aid;
+    console.log(aid);
     editDialog.value = true;
+    articleF();
 }
 
-const deleteArticle = (row)=>{
+const handleDownload = (aid, url)=>{
+    downloadArticleD({ id: aid });
+    if (url) {
+        window.open(url, '_blank');
+    } else {
+        ElMessage.error('下载链接获取失败');
+    }
+    articleF();
+}
+
+const deleteArticle = (aid)=>{
     //确认框
     ElMessageBox.confirm(
     '你确定要删除该论文吗？',
@@ -72,7 +100,7 @@ const deleteArticle = (row)=>{
     )
     .then(async() => {
         //点击确认后调用接口删除
-        let result = await deleteArticleD({ id: row.id })
+        let result = await deleteArticleD({ id: aid })
       ElMessage({
         type: 'success',
         message: '删除成功',
@@ -86,6 +114,22 @@ const deleteArticle = (row)=>{
         type: 'info',
         message: '取消操作',
       })
+    })
+}
+
+const uploadFile = (file, fileList) => {
+    console.log(file, fileList);
+    const formData = new FormData();
+    formData.append('file', file.raw);
+    request({
+        url: '/upload',
+        method: 'post',
+        data: formData,
+    }).then(res => {
+        console.log(res);
+        articleA.value.url = res.data;
+    }).catch(err => {
+        console.log(err);
     })
 }
 </script>
@@ -104,13 +148,15 @@ const deleteArticle = (row)=>{
         </template>
         <el-table :data="article" style="width: 100%">
             <el-table-column label="序号" width="100" type="index"> </el-table-column>
-            <el-table-column label="文章id" prop="id"></el-table-column>
             <el-table-column label="文章名称" prop="title"></el-table-column>
             <el-table-column label="作者" prop="author"></el-table-column>
-            <el-table-column label="操作" width="100">
+            <el-table-column label="会议/期刊" prop="publisher"></el-table-column>
+            <el-table-column label="下载次数" prop="count"></el-table-column>
+            <el-table-column label="操作" width="150">
                 <template #default="{ row }">
-                    <el-button :icon="Edit" circle plain type="primary" @click="handleEdit(row)"></el-button>
-                    <el-button :icon="Delete" circle plain type="danger" @click="deleteArticle(row)"></el-button>
+                    <el-button :icon="Download" circle plain type="success" @click="handleDownload(row.id, row.url)"></el-button>
+                    <el-button :icon="Edit" circle plain type="primary" @click="handleEdit(row.id)"></el-button>
+                    <el-button :icon="Delete" circle plain type="danger" @click="deleteArticle(row.id)"></el-button>
                 </template>
             </el-table-column>
             <template #empty>
@@ -118,13 +164,32 @@ const deleteArticle = (row)=>{
             </template>
         </el-table>
         <el-dialog v-model="dialogVisible" title="添加论文" width="100%">
-            <el-form :model="article"  label-width="100px" style="padding-right: 30px">
-                <el-form-item label="title" prop="title">
-                    <el-input v-model="article.title" minlength="1" maxlength="30"></el-input>
+            <el-form :model="articleA"  label-width="100px" style="padding-right: 30px">
+                <el-form-item label="文章名称" prop="title">
+                    <el-input v-model="articleA.title" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="author" prop="author">
-                    <el-input v-model="article.author" minlength="1" maxlength="30"></el-input>
+                <el-form-item label="作者" prop="author">
+                    <el-input v-model="articleA.author" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
+                <el-form-item label="会议/期刊" prop="publisher">
+                    <el-input v-model="articleA.publisher" minlength="1" maxlength="30"></el-input>
+                </el-form-item>
+                <el-upload class="uploadfile"
+                    drag
+                    action="none"
+                    multiple
+                    :auto-upload="false"
+                    :on-change="(file, fileList) => { uploadFile(file, fileList) }">
+                    <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                    <div class="el-upload__text">
+                    Drop file here or <em>click to upload</em>
+                    </div>
+                    <template #tip>
+                    <div class="el-upload__tip">
+                        请上传论文文件
+                    </div>
+                    </template>
+                </el-upload>
             </el-form>
             <template #footer>
                 <span class="dialog-footer">
@@ -135,13 +200,32 @@ const deleteArticle = (row)=>{
         </el-dialog>
 
         <el-dialog v-model="editDialog" title="修改论文" width="100%">
-            <el-form :model="article"  label-width="100px" style="padding-right: 30px">
-                <el-form-item label="title" prop="title">
-                    <el-input v-model="article.title" minlength="1" maxlength="30"></el-input>
+            <el-form :model="articleA"  label-width="100px" style="padding-right: 30px">
+                <el-form-item label="文章名称" prop="title">
+                    <el-input v-model="articleA.title" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="author" prop="author">
-                    <el-input v-model="article.author" minlength="1" maxlength="30"></el-input>
+                <el-form-item label="作者" prop="author">
+                    <el-input v-model="articleA.author" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
+                <el-form-item label="会议期刊" prop="publisher">
+                    <el-input v-model="articleA.publisher" minlength="1" maxlength="30"></el-input>
+                </el-form-item>
+                <el-upload class="uploadfile"
+                    drag
+                    action="none"
+                    multiple
+                    :auto-upload="false"
+                    :on-change="(file, fileList) => { uploadFile(file, fileList) }">
+                    <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                    <div class="el-upload__text">
+                    Drop file here or <em>click to upload</em>
+                    </div>
+                    <template #tip>
+                    <div class="el-upload__tip">
+                        请上传论文文件
+                    </div>
+                    </template>
+                </el-upload>
             </el-form>
             <template #footer>
                 <span class="dialog-footer">

@@ -35,3 +35,11 @@ export const editArticleD = (articleData) => {
     }
     return request.put('/article',params);
 }
+
+export const downloadArticleD = (articleData) => {
+    const params = new URLSearchParams();
+    for(let key in articleData){
+        params.append(key,articleData[key]);
+    }
+    request.post('/article/download',params);
+}
