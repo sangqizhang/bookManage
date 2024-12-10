@@ -3,7 +3,9 @@ import request from '@/Utils/request.js'
 import {
     Edit,
     View,
-    Delete
+    Delete,
+    Sell,
+    SoldOut
 } from '@element-plus/icons-vue';
 import { ref, onMounted } from 'vue';
 import { useTokenStore } from '@/stores/token';
@@ -82,6 +84,18 @@ const GetBook = async(row)=>{
     viewBook.value = result.data;
 }
 
+const borrowed = (row)=>{
+    return false;
+}
+
+const borrowBook = (row)=>{
+    getDialog.value = true;
+}
+
+const returnBook = (row)=>{
+    getDialog.value = true;
+}
+
 import { ElMessageBox } from 'element-plus';
 const deleteBook = (row)=>{
     //确认框
@@ -131,15 +145,16 @@ const openDialog = () => {
         </template>
         <el-table :data="book" style="width: 100%">
             <el-table-column label="序号" width="100" type="index"> </el-table-column>
-            <el-table-column label="图书id" prop="id"></el-table-column>
             <el-table-column label="图书名称" prop="title"></el-table-column>
             <el-table-column label="作者" prop="author"></el-table-column>
             <el-table-column label="总数量" prop="total"></el-table-column>
             <el-table-column label="可借阅数量" prop="available"></el-table-column>
             <el-table-column label="借阅次数" prop="count"></el-table-column>
             <el-table-column label="索书号" prop="index"></el-table-column>
-            <el-table-column label="操作" width="100">
+            <el-table-column label="操作" width="150">
                 <template #default="{ row }">
+                    <el-button v-if="borrowed(row)" :icon="Sell" circle plain type="danger" @click="returnBook(row)"></el-button>
+                    <el-button v-else :icon="SoldOut" circle plain type="success" @click="borrowBook(row)"></el-button>
                     <el-button :icon="View" circle plain type="primary" @click="GetBook(row)"></el-button>   
                     <el-button :icon="Delete" circle plain type="danger" @click="deleteBook(row)"></el-button>
                 </template>

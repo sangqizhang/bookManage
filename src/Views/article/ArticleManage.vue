@@ -4,7 +4,8 @@ import {
     Edit,
     Delete,
     Download,
-    UploadFilled
+    UploadFilled,
+    Search
 } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue'
 import { useTokenStore } from '@/stores/token';
@@ -38,8 +39,10 @@ const downloadA = ref({
 
 const dialogVisible = ref(false)
 const editDialog = ref(false)
+const searchContent = ref('')
+const select = ref('1')
 
-import { articleFind, addArticleD, deleteArticleD, editArticleD, downloadArticleD } from '@/API/article';
+import { articleFind, addArticleD, deleteArticleD, editArticleD, downloadArticleD, articleSearch, authorSearch, publisherSearch } from '@/API/article';
 const articleF = async ()=>{
     let result = await articleFind();
     console.log(result)
@@ -132,6 +135,32 @@ const uploadFile = (file, fileList) => {
         console.log(err);
     })
 }
+
+const searchArticle = () => {
+    if(select.value === '1') {
+        articleSearch({ title: searchContent.value }).then(res => {
+            article.value = res.data;
+        }).catch(err => {
+            console.log(err);
+        })
+    } else if(select.value === '3') {
+        publisherSearch({ publisher: searchContent.value }).then(res => {
+            article.value = res.data;
+        }).catch(err => {
+            console.log(err);
+        })
+    } else if(select.value === '2') {
+        authorSearch({ author: searchContent.value }).then(res => {
+            article.value = res.data;
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+}
+const selectChange = () => {
+    searchContent.value = '';
+    articleF();
+}
 </script>
 
 <template>
@@ -144,7 +173,27 @@ const uploadFile = (file, fileList) => {
                     <el-button type="primary" @click="dialogVisible = true">添加论文</el-button>
                 </div>
             </div>
-            
+            <div class="input1">
+                <el-input
+                v-model="searchContent"
+                style="max-width: 600px"
+                placeholder="查找内容"
+                class="search1"
+                @input="searchArticle"
+                >
+                <template #prepend>
+                    <el-button :icon="Search" />
+                </template>
+                <template #append>
+                    <el-select v-model="select" placeholder="Select" style="width: 115px"
+                    @change="selectChange">
+                    <el-option label="论文题目" value="1" />
+                    <el-option label="作者" value="2" />
+                    <el-option label="会议/期刊" value="3" />
+                    </el-select>
+                </template>
+                </el-input>
+            </div>
         </template>
         <el-table :data="article" style="width: 100%">
             <el-table-column label="序号" width="100" type="index"> </el-table-column>

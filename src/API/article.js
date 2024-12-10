@@ -43,3 +43,27 @@ export const downloadArticleD = (articleData) => {
     }
     request.post('/article/download',params);
 }
+
+export const articleSearch = (articleData) => {
+    const params = new URLSearchParams();
+    for(let key in articleData){
+        params.append(key,articleData[key]);
+    }
+    return request.post('/article/filter1',params);
+}
+
+export const authorSearch = (articleData) => {
+    const params = new URLSearchParams();
+    for(let key in articleData){
+        params.append(key,articleData[key]);
+    }
+    return request.post('/article/filter2',params);
+}
+
+export const publisherSearch = (articleData) => {
+    const params = new URLSearchParams();
+    for(let key in articleData){
+        params.append(key,articleData[key]);
+    }
+    return request.post('/article/filter3',params);
+}
