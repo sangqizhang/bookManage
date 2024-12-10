@@ -64,6 +64,8 @@ const handleCommand = (command) => {
         // 处理重置密码
     }
 };
+
+const userType = sessionStorage.getItem('userType');
 </script>
 
 <template>
@@ -87,7 +89,7 @@ const handleCommand = (command) => {
                     </el-icon>
                     <span>书籍管理</span>
                 </el-menu-item>
-                <el-menu-item index="/userManage">
+                <el-menu-item v-if="userType==1" index="/userManage">
                     <el-icon>
                         <Promotion />
                     </el-icon>

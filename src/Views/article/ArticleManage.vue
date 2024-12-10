@@ -41,6 +41,7 @@ const dialogVisible = ref(false)
 const editDialog = ref(false)
 const searchContent = ref('')
 const select = ref('1')
+const userType = sessionStorage.getItem('userType');
 
 import { articleFind, addArticleD, deleteArticleD, editArticleD, downloadArticleD, articleSearch, authorSearch, publisherSearch } from '@/API/article';
 const articleF = async ()=>{
@@ -205,7 +206,7 @@ const selectChange = () => {
                 <template #default="{ row }">
                     <el-button :icon="Download" circle plain type="success" @click="handleDownload(row.id, row.url)"></el-button>
                     <el-button :icon="Edit" circle plain type="primary" @click="handleEdit(row.id)"></el-button>
-                    <el-button :icon="Delete" circle plain type="danger" @click="deleteArticle(row.id)"></el-button>
+                    <el-button v-if="userType==1" :icon="Delete" circle plain type="danger" @click="deleteArticle(row.id)"></el-button>
                 </template>
             </el-table-column>
             <template #empty>

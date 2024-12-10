@@ -56,17 +56,18 @@ const tokenStore = useTokenStore()
 const login = async ()=>{
     let result = await userLoginService(registerData.value);
     console.log(result)
-    if(result.code === 200){
+    if(result.code == 200 && result.data.token){
         //将得到的token存储到pinia中
         console.log(result.data.id)
         sessionStorage.setItem('userId',result.data.id)
+        sessionStorage.setItem('userType',result.data.type)
         tokenStore.setToken(result.data.token)
         //跳转到主页
         router.push('/')
         //alert(result.msg?result.msg:'登录成功')
         ElMessage.success('登录成功')
     }else{
-        alert('登录失败')
+        ElMessage.error(result.message?result.message:'系统错误')
     }
 }
 

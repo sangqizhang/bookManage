@@ -56,6 +56,7 @@ const viewBook = ref(
 
 const dialogVisible = ref(false);
 const getDialog = ref(false);
+const userType = sessionStorage.getItem('userType');
 
 import { bookFind, addBookD, deleteBookD, getBookD } from '@/API/book';
 const BookF = async ()=>{
@@ -156,7 +157,7 @@ const openDialog = () => {
                     <el-button v-if="borrowed(row)" :icon="Sell" circle plain type="danger" @click="returnBook(row)"></el-button>
                     <el-button v-else :icon="SoldOut" circle plain type="success" @click="borrowBook(row)"></el-button>
                     <el-button :icon="View" circle plain type="primary" @click="GetBook(row)"></el-button>   
-                    <el-button :icon="Delete" circle plain type="danger" @click="deleteBook(row)"></el-button>
+                    <el-button v-if="userType==1" :icon="Delete" circle plain type="danger" @click="deleteBook(row)"></el-button>
                 </template>
             </el-table-column>
             <template #empty>
