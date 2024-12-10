@@ -197,9 +197,6 @@ const openDialog = () => {
         <el-form-item label="出版时间">
           <el-input v-model="viewBook.publishtime" disabled></el-input>
         </el-form-item>
-        <el-form-item label="索书号">
-          <el-input v-model="viewBook.index" disabled></el-input>
-        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">

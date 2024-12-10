@@ -2,6 +2,7 @@
 import request from '@/Utils/request.js'
 import {
     Edit,
+    View,
     Delete
 } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue'
@@ -32,9 +33,19 @@ const useradd = ref(
         "email": '',
     }
 )
-
+const viewUser = ref(
+    {
+        "username": '',
+        "password": '',
+        "type": '',
+        "name": '',
+        "phone": '',
+        "email": '',
+    }
+)
 const dialogVisible = ref(false)
-import { userFind, adduserD, deleteuserD } from '@/API/user';
+const getDialog = ref(false)
+import { userFind, adduserD, deleteuserD, getUserD } from '@/API/user';
 const userF = async ()=>{
     let result = await userFind();
     console.log(result)
@@ -94,6 +105,12 @@ const getUserType = (type) => {
     return '未知';
     }
 }
+
+const getUser = async(row)=>{
+    getDialog.value = true;
+    let result = await getUserD(row.id);
+    viewUser.value = result.data;
+}
 </script>
 
 <template>
@@ -122,7 +139,7 @@ const getUserType = (type) => {
             </el-table-column>
             <el-table-column label="操作" width="100">
                 <template #default="{ row }">
-                    <el-button :icon="Edit" circle plain type="primary" @click="dialogVisible=true" ></el-button>
+                    <el-button :icon="Edit" circle plain type="primary" @click="getUser(row)" ></el-button>
                     <el-button :icon="Delete" circle plain type="danger" @click="deleteuser(row)"></el-button>
                 </template>
             </el-table-column>
@@ -132,22 +149,22 @@ const getUserType = (type) => {
         </el-table>
         <el-dialog v-model="dialogVisible" title="添加用户" width="100%">
             <el-form :model="useradd"  label-width="100px" style="padding-right: 30px">
-                <el-form-item label="用户名" prop="title">
+                <el-form-item label="用户名" prop="username">
                     <el-input v-model="useradd.username" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="title">
+                <el-form-item label="密码" prop="password">
                     <el-input v-model="useradd.password" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="用户类型" prop="title">
+                <el-form-item label="用户类型" prop="type">
                     <el-input v-model="useradd.type" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="真实姓名" prop="title">
+                <el-form-item label="真实姓名" prop="name">
                     <el-input v-model="useradd.name" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="手机" prop="title">
+                <el-form-item label="手机" prop="phone">
                     <el-input v-model="useradd.phone" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="title">
+                <el-form-item label="邮箱" prop="email">
                     <el-input v-model="useradd.email" minlength="1" maxlength="30"></el-input>
                 </el-form-item>
             </el-form>
@@ -158,6 +175,34 @@ const getUserType = (type) => {
                 </span> 
             </template>
         </el-dialog>
+
+        <el-dialog v-model="getDialog" title="查看用户信息" width="100%">
+      <el-form :model="viewUser" label-width="100px" style="padding-right: 30px">
+        <el-form-item label="用户名" prop="username">
+            <el-input v-model="viewUser.username" minlength="1" maxlength="30"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+            <el-input v-model="viewUser.password" minlength="1" maxlength="30"></el-input>
+        </el-form-item>
+        <el-form-item label="用户类型" prop="type">
+            <el-input v-model="viewUser.type" minlength="1" maxlength="30"></el-input>
+        </el-form-item>
+        <el-form-item label="真实姓名" prop="name">
+            <el-input v-model="viewUser.name" minlength="1" maxlength="30"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="phone">
+            <el-input v-model="viewUser.phone" minlength="1" maxlength="30"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+            <el-input v-model="viewUser.email" minlength="1" maxlength="30"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="getDialog = false">关闭</el-button>
+        </span>
+      </template>
+    </el-dialog>
 
     </el-card>
 </template>

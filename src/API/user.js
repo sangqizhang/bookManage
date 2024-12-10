@@ -57,3 +57,8 @@ export const deleteuserD = (userId)=>{
     console.log(userId);
     return request.delete(`/user/${userId}`);
 }
+
+export const getUserD = (userId)=>{
+    console.log(userId);
+    return request.get(`/user/${userId}`);
+}
