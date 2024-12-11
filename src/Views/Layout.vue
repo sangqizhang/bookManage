@@ -2,9 +2,14 @@
 import {
     Management,
     Promotion,
+    Notebook,
+    House,
+    Document,
     UserFilled,
     User,
+    Lock,
     Crop,
+    SetUp,
     EditPen,
     SwitchButton,
     CaretBottom
@@ -79,19 +84,19 @@ const userType = sessionStorage.getItem('userType');
                 router>
                 <el-menu-item index="/article/article">
                     <el-icon>
-                        <Management />
+                        <Document />
                     </el-icon>
                     <span>论文管理</span>
                 </el-menu-item>
                 <el-menu-item index="/book">
                     <el-icon>
-                        <Promotion />
+                        <Notebook />
                     </el-icon>
                     <span>书籍管理</span>
                 </el-menu-item>
                 <el-menu-item v-if="userType==1" index="/userManage">
                     <el-icon>
-                        <Promotion />
+                        <User />
                     </el-icon>
                     <span>用户管理</span>
                 </el-menu-item>
@@ -100,19 +105,19 @@ const userType = sessionStorage.getItem('userType');
                 <el-sub-menu >
                     <template #title>
                         <el-icon>
-                            <UserFilled />
+                            <House />
                         </el-icon>
                         <span>个人中心</span>
                     </template>
                     <el-menu-item index="/user/info">
                         <el-icon>
-                            <User />
+                            <SetUp />
                         </el-icon>
                         <span>基本资料</span>
                     </el-menu-item>
                     <el-menu-item index="/user/passwd">
                         <el-icon>
-                            <User />
+                            <Lock />
                         </el-icon>
                         <span>修改密码</span>
                     </el-menu-item>

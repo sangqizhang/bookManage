@@ -59,11 +59,16 @@ const dialogVisible = ref(false);
 const getDialog = ref(false);
 const userType = sessionStorage.getItem('userType');
 const intervalId = ref(null);
+const currentPage = ref(1);
+const pageSize = ref(10);
+const bookTotal = ref(0);
 
-import { bookFind, addBookD, deleteBookD, getBookD, borrowBookD, returnBookD, borrowedBookD } from '@/API/book';
+import { bookFind, addBookD, deleteBookD, getBookD, borrowBookD, returnBookD, borrowedBookD, bookTotalD } from '@/API/book';
+
 const BookF = async ()=>{
-    let result = await bookFind();
-    console.log(result);
+    let result = await bookFind( {page: currentPage.value, pageSize: pageSize.value} );
+    let result2 = await bookTotalD();
+    bookTotal.value = result2.data;
     book.value = result.data.rows;
     updateAllBookStatuses();
 }
@@ -255,6 +260,19 @@ const openDialog = () => {
     </el-dialog>
 
     </el-card>
+    <div class="pagination">
+    <el-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      background
+      :size="size"
+      :disabled="disabled"
+      :background="background"
+      layout="prev, pager, next, jumper"
+      :total="bookTotal"
+      @change="BookF"
+    />
+  </div>
 </template>
 
 <style scoped>

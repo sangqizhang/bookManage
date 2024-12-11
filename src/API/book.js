@@ -1,12 +1,12 @@
 import request from '@/Utils/request.js'
 
 //提供调用注册接口的函数
-export const bookFind = () => {
+export const bookFind = (bookData) => {
     //借助于urlSearchParams完成传递
-    // const params = new URLSearchParams()
-    // for(let key in articleData){
-    //     params.append(key,articleData[key]);
-    // }
+    const params = new URLSearchParams()
+    for(let key in bookData){
+        params.append(key,bookData[key]);
+    }
     return request.get('/book');
 }
 
@@ -53,4 +53,8 @@ export const borrowedBookD = (bookData) => {
         params.append(key,bookData[key]);
     }
     return request.post('/book/borrowed',params);
+}
+
+export const bookTotalD = () => {
+    return request.get('/book/total');
 }
