@@ -6,6 +6,7 @@ import {
     House,
     Document,
     UserFilled,
+    MessageBox,
     User,
     Lock,
     Crop,
@@ -88,12 +89,28 @@ const userType = sessionStorage.getItem('userType');
                     </el-icon>
                     <span>论文管理</span>
                 </el-menu-item>
-                <el-menu-item index="/book">
-                    <el-icon>
-                        <Notebook />
-                    </el-icon>
-                    <span>书籍管理</span>
-                </el-menu-item>
+
+                <el-sub-menu index="1">
+                    <template #title>
+                        <el-icon>
+                            <Notebook/>
+                        </el-icon>
+                        <span>书籍管理</span>
+                    </template>
+                    <el-menu-item index="/book">
+                        <el-icon>
+                            <Management />
+                        </el-icon>
+                        <span>图书管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="/book/info">
+                        <el-icon>
+                            <MessageBox />
+                        </el-icon>
+                        <span>借阅信息</span>
+                    </el-menu-item>
+                </el-sub-menu>
+
                 <el-menu-item v-if="userType==1" index="/userManage">
                     <el-icon>
                         <User />
@@ -102,7 +119,7 @@ const userType = sessionStorage.getItem('userType');
                 </el-menu-item>
                 
                 <!-- 子菜单标签 -->
-                <el-sub-menu >
+                <el-sub-menu index="2">
                     <template #title>
                         <el-icon>
                             <House />

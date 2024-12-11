@@ -6,6 +6,7 @@ import Layout from '@/Views/Layout.vue'
 
 import ArticleManageVue from '@/Views/article/ArticleManage.vue'
 import BookManageVue from '@/Views/book/BookManage.vue'
+import BookInfoVue from '@/Views/book/BookInfo.vue'
 import UserManageVue from '@/Views/user/UserManage.vue'
 
 import UserAvatarVue from '@/Views/user/UserAvatar.vue'
@@ -23,6 +24,7 @@ const routes = [
         children:[
             {path:'/article/article',component:ArticleManageVue},
             {path:'/book',component:BookManageVue},
+            {path:'/book/info',component:BookInfoVue},
             {path:'/userManage',component:UserManageVue},
             {path:'/user/info',component:UserInfoVue},
             {path:'/article/avatar',component:UserAvatarVue},

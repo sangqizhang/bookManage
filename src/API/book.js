@@ -58,3 +58,16 @@ export const borrowedBookD = (bookData) => {
 export const bookTotalD = () => {
     return request.get('/book/total');
 }
+
+export const recordFind = (recordData) => {
+    //借助于urlSearchParams完成传递
+    const params = new URLSearchParams()
+    for(let key in recordData){
+        params.append(key,recordData[key]);
+    }
+    return request.get('/book/record');
+}
+
+export const recordTotalD = () => {
+    return request.get('/book/rtotal');
+}
