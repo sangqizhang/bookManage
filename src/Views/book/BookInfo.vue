@@ -60,15 +60,29 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const recordTotal = ref(0);
 
-import { recordFind, getBookD, borrowBookD, returnBookD, borrowedBookD, recordTotalD, bookFind } from '@/API/book';
+import { recordUserFind, recordUserTotalD, recordFind, getBookD, borrowBookD, returnBookD, borrowedBookD, recordTotalD, bookFind } from '@/API/book';
 import { userFindService } from '@/API/user';
 
 const recordF = async ()=>{
-    let result = await recordFind( {page: currentPage.value, pageSize: pageSize.value} );
-    let result2 = await recordTotalD();
-    recordTotal.value = result2.data;
-    book.value = result.data.rows;
-    updateAllRecord();
+    let utype = Number(sessionStorage.getItem('userType'));
+    let uid = Number(sessionStorage.getItem('userId'));
+    if(utype == 1)
+    {
+        let result = await recordFind( {page: currentPage.value, pageSize: pageSize.value} );
+        let result2 = await recordTotalD();
+        recordTotal.value = result2.data;
+        book.value = result.data.rows;
+        updateAllRecord();
+    }
+    else
+    {
+        let result = await recordUserFind( { userId: uid, page: currentPage.value, pageSize: pageSize.value} );
+        let result2 = await recordUserTotalD( {userId: uid} );
+        console.log(result.data);
+        recordTotal.value = result2.data;
+        book.value = result.data.rows;
+        updateAllRecord();
+    }
 }
 onMounted(() => {
     recordF();

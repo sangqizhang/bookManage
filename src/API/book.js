@@ -68,6 +68,23 @@ export const recordFind = (recordData) => {
     return request.get('/book/record');
 }
 
+export const recordUserFind = (recordData) => {
+    console.log(recordData);
+    const params = new URLSearchParams()
+    for(let key in recordData){
+        params.append(key,recordData[key]);
+    }
+    return request.get('/book/recordu');
+}
+
 export const recordTotalD = () => {
     return request.get('/book/rtotal');
+}
+
+export const recordUserTotalD = (recordData) => {
+    const params = new URLSearchParams()
+    for(let key in recordData){
+        params.append(key,recordData[key]);
+    }
+    return request.get('/book/rtotalu');
 }
