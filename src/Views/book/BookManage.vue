@@ -25,6 +25,7 @@ const book = ref([
         "count": '',
         "total": '',
         "available": '',
+        "status": ''
     }
 ])
 
@@ -57,13 +58,14 @@ const viewBook = ref(
 const dialogVisible = ref(false);
 const getDialog = ref(false);
 const userType = sessionStorage.getItem('userType');
+const intervalId = ref(null);
 
-import { bookFind, addBookD, deleteBookD, getBookD } from '@/API/book';
+import { bookFind, addBookD, deleteBookD, getBookD, borrowBookD, returnBookD, borrowedBookD } from '@/API/book';
 const BookF = async ()=>{
     let result = await bookFind();
     console.log(result);
     book.value = result.data.rows;
-
+    updateAllBookStatuses();
 }
 onMounted(() => {
     BookF();
@@ -85,16 +87,47 @@ const GetBook = async(row)=>{
     viewBook.value = result.data;
 }
 
-const borrowed = (row)=>{
-    return false;
+const updateAllBookStatuses = async(row)=>{
+    let userid = Number(sessionStorage.getItem('userId'));
+    // console.log(row.id);
+    // if(row.id == undefined) {ElMessage.error('errprrrrrrr');}
+    for (let item of book.value) {
+        let result = await borrowedBookD({ userId: userid, bookId: item.id });
+        console.log(result);
+        item.status = result.data;
+    }
 }
 
-const borrowBook = (row)=>{
-    getDialog.value = true;
+const borrowBook = async(row)=>{
+    let result = await borrowBookD( {bookId: row.id} );
+    if(result.message == 'success'){
+        ElMessage({
+            type: 'success',
+            message: '借阅成功',
+        })
+    }else{
+        ElMessage({
+            type: 'error',
+            message: result.message,
+        })
+    }
+    BookF();
 }
 
-const returnBook = (row)=>{
-    getDialog.value = true;
+const returnBook = async(row)=>{
+    let result = await returnBookD( {bookId: row.id} );
+    if(result.message == 'success'){
+        ElMessage({
+            type: 'success',
+            message: '还书成功',
+        })
+    }else{
+        ElMessage({
+            type: 'error',
+            message: result.message,
+        })
+    }
+    BookF();
 }
 
 import { ElMessageBox } from 'element-plus';
@@ -146,7 +179,7 @@ const openDialog = () => {
         </template>
         <el-table :data="book" style="width: 100%">
             <el-table-column label="序号" width="100" type="index"> </el-table-column>
-            <el-table-column label="图书名称" prop="title"></el-table-column>
+            <el-table-column :sortable="true" label="图书名称" prop="title"></el-table-column>
             <el-table-column label="作者" prop="author"></el-table-column>
             <el-table-column label="总数量" prop="total"></el-table-column>
             <el-table-column label="可借阅数量" prop="available"></el-table-column>
@@ -154,7 +187,7 @@ const openDialog = () => {
             <el-table-column label="索书号" prop="index"></el-table-column>
             <el-table-column label="操作" width="150">
                 <template #default="{ row }">
-                    <el-button v-if="borrowed(row)" :icon="Sell" circle plain type="danger" @click="returnBook(row)"></el-button>
+                    <el-button v-if="row.status==1" :icon="Sell" circle plain type="danger" @click="returnBook(row)"></el-button>
                     <el-button v-else :icon="SoldOut" circle plain type="success" @click="borrowBook(row)"></el-button>
                     <el-button :icon="View" circle plain type="primary" @click="GetBook(row)"></el-button>   
                     <el-button v-if="userType==1" :icon="Delete" circle plain type="danger" @click="deleteBook(row)"></el-button>

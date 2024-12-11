@@ -29,3 +29,28 @@ export const getBookD = (bookId)=>{
     console.log(bookId);
     return request.post(`/book/${bookId}`);
 }
+
+export const borrowBookD = (bookData) => {
+    const params = new URLSearchParams();
+    for(let key in bookData){
+        params.append(key,bookData[key]);
+    }
+    return request.post('/book/borrow',params);
+}
+
+export const returnBookD = (bookData) => {
+    const params = new URLSearchParams();
+    for(let key in bookData){
+        params.append(key,bookData[key]);
+    }
+    return request.post('/book/return',params);
+}
+
+export const borrowedBookD = (bookData) => {
+    console.log(bookData);
+    const params = new URLSearchParams();
+    for(let key in bookData){
+        params.append(key,bookData[key]);
+    }
+    return request.post('/book/borrowed',params);
+}
